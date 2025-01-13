@@ -6,7 +6,7 @@ import subprocess
 import threading
 
 # URL API
-API_URL = "http://192.168.1.141:8085/data.json"
+API_URL = "http://192.168.1.140:8085/data.json"
 
 # Stała dla kosztów energii
 COST_PER_KWH = 1.29
