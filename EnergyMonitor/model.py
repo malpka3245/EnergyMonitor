@@ -3,7 +3,6 @@ COST_PER_KWH = 1.29
 class EnergyMonitor:
     def __init__(self):
 
-
         self.total_energy_wh_cpu = 0.0
         self.total_energy_kwh_cpu = 0.0
         self.total_cost_cpu = 0.0
@@ -37,7 +36,6 @@ class EnergyMonitor:
         # Inicjalizacja czasu
         self.start_time = datetime.now()
 
-
     # def recive_data(self, cpu_value, gpu_value, other_value):
     #     if cpu_value + gpu_value + other_value <= 0:
     #         self.api_status.set("Pc is Off")
@@ -65,11 +63,9 @@ class EnergyMonitor:
     def get_logger_data(self):
         return {
                 "energy_wh": f"{round(self.total_energy_wh_all, 3)} wh",
-                "energy_kWh": round(self.total_energy_kwh_all, 2),
-                "cost_pln": round(self.total_cost_all, 2),
+                "energy_kWh": f"{round(self.total_energy_kwh_all, 2)} kWh",
+                "cost_pln": f"{round(self.total_cost_all, 2)} zł",
         }
-
-
 
     # def update_elapsed_time(self):
     #     """Aktualizuje czas działania aplikacji."""
