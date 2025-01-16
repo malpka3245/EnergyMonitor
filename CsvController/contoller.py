@@ -1,5 +1,7 @@
 import csv
 import os
+
+
 class CsvController:
     def __init__(self, file_path):
         self.file_path = file_path
@@ -18,6 +20,7 @@ class CsvController:
             last_date = last_row["date"]
             last_session = int(last_row["session"])
             return last_date, last_session
+
     def write_session_to_csv(self, data):
         file_exists = os.path.exists(self.file_path)
         temp_rows = []
