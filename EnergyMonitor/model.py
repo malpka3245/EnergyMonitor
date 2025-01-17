@@ -4,6 +4,10 @@ from datetime import datetime
 class EnergyMonitor:
     def __init__(self):
         self.cost_per_kwh = 1.29
+        self.api_ip = None
+        self.api_port = None
+        self.api_url = f"http://{self.api_ip}:{self.api_port}/data.json"
+
         self.total_energy_wh_cpu = 0.0
         self.total_energy_kwh_cpu = 0.0
         self.total_cost_cpu = 0.0
@@ -39,10 +43,10 @@ class EnergyMonitor:
 
         self.power_history = [0.0] * 3
 
-        # Inicjalizacja czasu
         self.start_time = datetime.now()
 
-    def update_data(self, cpu_value, gpu_value, other_value):
+    def update_data(self, cpu_value, gpu_value, other_value, settings):
+        self.cost_per_kwh = settings.cost_per_kwh
         self.total_power_value = cpu_value + gpu_value + other_value
         self.cpu_value = cpu_value
         self.gpu_value = gpu_value

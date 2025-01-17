@@ -1,15 +1,24 @@
 import requests
 
-API_URL = "http://localhost:8085/data.json"
-
 
 class OhmController:
+    def __init__(self, api_ip="localhost", api_port=8085):
+        # Domyślne wartości mogą być takie jak poprzednio
+        self.api_ip = api_ip
+        self.api_port = api_port
+        self.api_url = f"http://{self.api_ip}:{self.api_port}/data.json"
+
+    def update_api_url(self, api_ip, api_port):
+        # Aktualizowanie URL na podstawie nowych wartości IP i portu
+        self.api_ip = api_ip
+        self.api_port = api_port
+        self.api_url = f"http://{self.api_ip}:{self.api_port}/data.json"
+
     def find_power_values(self, node, parent_path=""):
 
         power_data = {}
 
         if isinstance(node, dict):
-            # Zbuduj ścieżkę urządzenia
             current_path = f"{parent_path} > {node.get('Text', 'Unknown')}".strip(" > ")
             value = node.get("Value", "")
             if "W" in value:
@@ -47,7 +56,7 @@ class OhmController:
 
     def fetch_power_data(self):
         try:
-            response = requests.get(API_URL, timeout=1)
+            response = requests.get(self.api_url, timeout=1)
             if response.status_code == 200:
                 data = response.json()
                 max_power_values = self.find_power_values(data)
@@ -58,6 +67,7 @@ class OhmController:
                 return cpu_value, gpu_value, other_value
             else:
                 print(f"Brak komunikacji z API. Kod odpowiedzi: {response.status_code}")
+
         except Exception:
             pass
         return 0.0, 0.0, 0.0

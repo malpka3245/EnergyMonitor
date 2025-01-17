@@ -1,0 +1,5 @@
+{
+    "api_ip": "localhost",
+    "api_port": 8085,
+    "cost_per_kwh": 1.29
+}
