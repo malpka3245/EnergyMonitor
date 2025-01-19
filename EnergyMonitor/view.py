@@ -6,35 +6,43 @@ import json
 
 class EnergyMonitorView:
     def __init__(self, root, controller):
-
         window_width = 400
-        window_height = 550  # Zwiększenie wysokości okna, by pomieścić więcej elementów
+        window_height = 580
 
         self.controller = controller
         self.root = root
 
-        # Nowoczesne tło i czcionki
-        self.root.configure(bg="#f4f4f9")  # Jasne tło
+        self.root.configure(bg="#f4f4f9")
         self.root.geometry(f"{window_width}x{window_height}")
         self.root.resizable(False, False)
 
-        # Stylowanie dla całego okna
         style = ttk.Style()
         style.configure("TLabel", font=("Segoe UI", 10), background="#f4f4f9", foreground="#333333")
         style.configure("TEntry", font=("Segoe UI", 10), padding=5)
         style.configure("TButton", font=("Segoe UI", 10), padding=8, relief="flat", background="#333333",
-                        foreground="white")
+                        foreground="black")
         style.map("TButton", background=[("active", "#444444")])
 
         self.df = None
         self.cost_per_kwh, self.api_ip, self.api_port = self.load_settings()
         self.cost_changed = False
 
-        # Usunięcie settings_frame i values_frame
-        self.restart_warning = ttk.Label(self.root, text="teeeeeeeeeeeeeeeest", foreground="red", font=("Segoe UI", 10))
-        self.restart_warning.grid(row=1, column=0, sticky="w", padx=20, pady=10)
+        self.api_label = ttk.Label(self.root, text="PC is Off", foreground="gray", font=("Segoe UI", 10, "italic"))
+        self.api_label.grid(row=3, column=1, columnspan=3, padx=33, pady=0, sticky="nsew")
 
-        # Cena za kWh, API IP, API Port w jednym rzędzie
+        warning_frame = ttk.Frame(self.root, relief="", padding=0)
+        warning_frame.grid(row=2, column=0, columnspan=3, padx=0, pady=0, sticky="nsew")
+
+        warning_frame.configure(style="Custom.TFrame")
+
+        style = ttk.Style()
+        style.configure("Custom.TFrame", background="#f4f4f9")
+
+        style.configure("Custom.TLabel", background="#f4f4f9", foreground="red", font=("Segoe UI", 10))
+
+        self.restart_warning = ttk.Label(warning_frame, text="", style="Custom.TLabel")
+        self.restart_warning.grid(row=3, column=0, sticky="nsew", padx=40, pady=10)
+
         cost_label = ttk.Label(self.root, text="Cena za kWh:")
         cost_label.grid(row=0, column=0, padx=20, pady=5, sticky="w")
 
@@ -59,9 +67,8 @@ class EnergyMonitorView:
         self.port_entry.grid(row=1, column=2, padx=20, pady=5)
         self.port_entry.bind("<Return>", lambda event: self.update_settings(new_api_port=self.port_entry_var.get()))
 
-        # Sekcja z wartościami Power
         power_frame = ttk.Frame(self.root, relief="solid", padding=10)
-        power_frame.grid(row=4, column=0, columnspan=3, padx=20, pady=10, sticky="nsew")
+        power_frame.grid(row=5, column=0, columnspan=3, padx=20, pady=10, sticky="nsew")
 
         self.cpu_label = ttk.Label(power_frame, text=f"CPU Power: {self.controller.monitor.cpu_value} W")
         self.cpu_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
@@ -78,9 +85,8 @@ class EnergyMonitorView:
         self.cost_label = ttk.Label(power_frame, text=f"Cost: {self.controller.monitor.total_cost_all} PLN")
         self.cost_label.grid(row=4, column=0, padx=10, pady=5, sticky="w")
 
-        # Sekcja z dodatkowymi informacjami
         info_frame = ttk.Frame(self.root, relief="solid", padding=10)
-        info_frame.grid(row=9, column=0, columnspan=3, padx=20, pady=10, sticky="nsew")
+        info_frame.grid(row=10, column=0, columnspan=3, padx=20, pady=10, sticky="nsew")
 
         self.session_label = ttk.Label(info_frame, text=f"Session Number: {self.controller.session}")
         self.session_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
@@ -96,18 +102,11 @@ class EnergyMonitorView:
                                           text=f"Total Energy (kWh): {self.controller.monitor.total_energy_kwh_all}")
         self.energy_kwh_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
 
-        # Przeniesienie napisu "PC is Off" na górę, nad ramki
-        self.api_label = ttk.Label(self.root, text="PC is Off", foreground="gray", font=("Segoe UI", 10, "italic"))
-        self.api_label.grid(row=3, column=1, columnspan=3, padx=33, pady=5, sticky="nsew")
-
-        # Przycisk "History" z poprawionym wyglądem
         history_button = ttk.Button(self.root, text="History", command=self.open_history)
-        history_button.grid(row=14, column=0, columnspan=3, pady=20)
+        history_button.grid(row=15, column=0, columnspan=3, pady=20)
 
-        # Stylizacja przycisku "History"
         history_button.configure(width=20, style="TButton")
 
-        # Wyrównanie kolumn
         self.root.grid_columnconfigure(0, weight=1)
         self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
@@ -298,11 +297,11 @@ class EnergyMonitorView:
             if updates_made:
                 self.save_settings(cost_per_kwh=self.cost_per_kwh, api_ip=self.api_ip, api_port=self.api_port)
                 self.restart_warning.config(
-                    text="Zapisano zmiany. Uruchom ponownie aplikację, aby wprowadzić zmiany.",
+                    text="Uruchom ponownie aplikację, aby wprowadzić zmiany.",
                     foreground="red"
                 )
             else:
-                self.restart_warning.config(text="", foreground="")
+                self.restart_warning.config(text="", foreground="green")
 
         except ValueError:
             messagebox.showerror("Error", "Proszę wprowadzić poprawne wartości dla ustawień.")
@@ -322,3 +321,4 @@ class EnergyMonitorView:
     def update(self):
         self.draw()
         self.receive_data()
+        self.root.title("Energy Monitor App")

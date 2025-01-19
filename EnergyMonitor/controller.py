@@ -12,9 +12,6 @@ class EnergyMonitorController:
         self.elapsed_time = 0
 
     def get_data(self):
-        api_ip = self.settings.api_ip
-        api_port = self.settings.api_port
-        cost_per_kwh = self.settings.cost_per_kwh
         if self.settings.api_ip != self.ohmc.api_ip or self.settings.api_port != self.ohmc.api_port:
             self.ohmc.update_api_url(self.settings.api_ip, self.settings.api_port)
         cpu_value, gpu_value, other_value = self.ohmc.fetch_power_data()
@@ -46,6 +43,7 @@ class EnergyMonitorController:
         # Zapisanie nowych ustawień
         self.settings.save()
         print("Settings updated and saved.")
+
     def attach_view(self, view):
         self.view = view
 
